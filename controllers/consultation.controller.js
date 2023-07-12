@@ -1,7 +1,34 @@
 const PrismaClient = require("@prisma/client").PrismaClient;
 const prisma = new PrismaClient();
 
+const isDemo = process.env.DEMO === true || process.env.DEMO === "true";
+
 const getAll = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json([
+      {
+        id: 1,
+        fecha: "2021-05-01",
+        motivo: "Dolor de cabeza",
+        diagnostico: "Migraña",
+        tratamiento: "Paracetamol",
+        pacienteId: 1,
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+      {
+        id: 2,
+        fecha: "2021-05-02",
+        motivo: "Dolor de cabeza",
+        diagnostico: "Migraña",
+        tratamiento: "Paracetamol",
+        pacienteId: 1,
+        createdAt: "2021-05-02T00:00:00.000Z",
+        updatedAt: "2021-05-02T00:00:00.000Z",
+      },
+    ]);
+  }
+
   const { search } = req.query;
 
   let consultations;
@@ -49,6 +76,19 @@ const getAll = async (req, res) => {
 };
 
 const getOne = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      id: 1,
+      fecha: "2021-05-01",
+      motivo: "Dolor de cabeza",
+      diagnostico: "Migraña",
+      tratamiento: "Paracetamol",
+      pacienteId: 1,
+      createdAt: "2021-05-01T00:00:00.000Z",
+      updatedAt: "2021-05-01T00:00:00.000Z",
+    });
+  }
+
   const { id } = req.params;
 
   const consultation = await prisma.consulta.findUnique({
@@ -67,6 +107,31 @@ const getOne = async (req, res) => {
 };
 
 const getAllFromPatient = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json([
+      {
+        id: 1,
+        fecha: "2021-05-01",
+        motivo: "Dolor de cabeza",
+        diagnostico: "Migraña",
+        tratamiento: "Paracetamol",
+        pacienteId: 1,
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+      {
+        id: 2,
+        fecha: "2021-05-02",
+        motivo: "Dolor de cabeza",
+        diagnostico: "Migraña",
+        tratamiento: "Paracetamol",
+        pacienteId: 1,
+        createdAt: "2021-05-02T00:00:00.000Z",
+        updatedAt: "2021-05-02T00:00:00.000Z",
+      },
+    ]);
+  }
+
   const { id } = req.params;
 
   const consultations = await prisma.consulta.findMany({
@@ -88,6 +153,19 @@ const getAllFromPatient = async (req, res) => {
 };
 
 const create = async (req, res) => {
+  if (isDemo) {
+    return res.status(201).json({
+      id: 1,
+      fecha: "2021-05-01",
+      motivo: "Dolor de cabeza",
+      diagnostico: "Migraña",
+      tratamiento: "Paracetamol",
+      pacienteId: 1,
+      createdAt: "2021-05-01T00:00:00.000Z",
+      updatedAt: "2021-05-01T00:00:00.000Z",
+    });
+  }
+
   const consultation = req.body;
 
   const existingConsultation = await prisma.consulta.findFirst({
@@ -120,6 +198,19 @@ const create = async (req, res) => {
 };
 
 const update = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      id: 1,
+      fecha: "2021-05-01",
+      motivo: "Dolor de cabeza",
+      diagnostico: "Migraña",
+      tratamiento: "Paracetamol",
+      pacienteId: 1,
+      createdAt: "2021-05-01T00:00:00.000Z",
+      updatedAt: "2021-05-01T00:00:00.000Z",
+    });
+  }
+
   const { id } = req.params;
   const consultation = req.body;
 
@@ -143,6 +234,19 @@ const update = async (req, res) => {
 };
 
 const deleteOne = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      id: 1,
+      fecha: "2021-05-01",
+      motivo: "Dolor de cabeza",
+      diagnostico: "Migraña",
+      tratamiento: "Paracetamol",
+      pacienteId: 1,
+      createdAt: "2021-05-01T00:00:00.000Z",
+      updatedAt: "2021-05-01T00:00:00.000Z",
+    });
+  }
+
   const { id } = req.params;
 
   const deletedConsultation = await prisma.consulta.delete({
@@ -161,6 +265,12 @@ const deleteOne = async (req, res) => {
 };
 
 const countMonth = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      count: 2,
+    });
+  }
+
   const count = await prisma.$queryRaw`
     SELECT COUNT(*) as count FROM Consulta
   `;
@@ -175,6 +285,11 @@ const countMonth = async (req, res) => {
 };
 
 const averageTotal = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      average: 2,
+    });
+  }
   const consultations = await prisma.$queryRaw`
     SELECT AVG(consultation_count) as average
     FROM (
@@ -194,6 +309,14 @@ const averageTotal = async (req, res) => {
 };
 
 const increaseMonth = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json([
+      {
+        timestamp: "2021-05-01",
+        value: 2,
+      },
+    ]);
+  }
   const consultations = await prisma.consulta.findMany({
     orderBy: {
       createdAt: "asc",

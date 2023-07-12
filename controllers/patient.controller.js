@@ -1,7 +1,32 @@
 const PrismaClient = require("@prisma/client").PrismaClient;
 const prisma = new PrismaClient();
 
+const isDemo = process.env.DEMO === true || process.env.DEMO === "true";
+
 const getAll = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json([
+      {
+        id: 1,
+        nombre: "Juan",
+        apellido: "Perez",
+        fechaNacimiento: "1990-01-01",
+        edad: 31,
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+      {
+        id: 2,
+        nombre: "Maria",
+        apellido: "Gomez",
+        fechaNacimiento: "1990-01-01",
+        edad: 31,
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+    ]);
+  }
+
   const { limit, search } = req.query;
 
   let patients;
@@ -42,6 +67,17 @@ const getAll = async (req, res) => {
 };
 
 const getOne = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      id: 1,
+      nombre: "Juan",
+      apellido: "Perez",
+      fechaNacimiento: "1990-01-01",
+      edad: 31,
+      createdAt: "2021-05-01T00:00:00.000Z",
+      updatedAt: "2021-05-01T00:00:00.000Z",
+    });
+  }
   const { id } = req.params;
 
   const patient = await prisma.paciente.findUnique({
@@ -60,6 +96,21 @@ const getOne = async (req, res) => {
 };
 
 const create = async (req, res) => {
+  if (isDemo) {
+    return res.status(201).json({
+      message: "Patient created",
+      patient: {
+        id: 1,
+        nombre: "Juan",
+        apellido: "Perez",
+        fechaNacimiento: "1990-01-01",
+        edad: 31,
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+    });
+  }
+
   const patient = req.body;
 
   const existingPatient = await prisma.paciente.findFirst({
@@ -96,6 +147,21 @@ const create = async (req, res) => {
 };
 
 const update = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      message: "Patient updated",
+      patient: {
+        id: 1,
+        nombre: "Juan",
+        apellido: "Perez",
+        fechaNacimiento: "1990-01-01",
+        edad: 31,
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+    });
+  }
+
   const { id } = req.params;
   const patient = req.body;
 
@@ -122,6 +188,21 @@ const update = async (req, res) => {
 };
 
 const deleteOne = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      message: "Patient deleted",
+      patient: {
+        id: 1,
+        nombre: "Juan",
+        apellido: "Perez",
+        fechaNacimiento: "1990-01-01",
+        edad: 31,
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+    });
+  }
+
   const { id } = req.params;
 
   // delete all consultations from patient
@@ -156,6 +237,12 @@ const deleteOne = async (req, res) => {
 };
 
 const countMonth = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      count: 1,
+    });
+  }
+
   const count = await prisma.$queryRaw`
     SELECT COUNT(*) as count FROM paciente
   `;
@@ -171,6 +258,12 @@ const countMonth = async (req, res) => {
 };
 
 const averageAge = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      averageAge: 31,
+    });
+  }
+
   const patients = await prisma.$queryRaw`
     SELECT AVG(edad) as age FROM paciente
   `;
@@ -185,6 +278,15 @@ const averageAge = async (req, res) => {
 };
 
 const increaseMonth = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json([
+      {
+        timestamp: "2021-01-01",
+        value: 1,
+      },
+    ]);
+  }
+
   const patients = await prisma.paciente.findMany({
     orderBy: {
       createdAt: "asc",

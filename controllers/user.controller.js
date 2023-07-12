@@ -4,7 +4,28 @@ const jwt = require("jsonwebtoken");
 
 const bcrypt = require("bcrypt");
 
+const isDemo = process.env.DEMO === true || process.env.DEMO === "true";
+
 const getAllUsers = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json([
+      {
+        id: 1,
+        username: "admin",
+        password: "admin",
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+      {
+        id: 2,
+        username: "user",
+        password: "user",
+        createdAt: "2021-05-01T00:00:00.000Z",
+        updatedAt: "2021-05-01T00:00:00.000Z",
+      },
+    ]);
+  }
+
   const users = await prisma.user.findMany();
 
   if (!users) {
@@ -20,6 +41,16 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      id: 1,
+      username: "admin",
+      password: "admin",
+      createdAt: "2021-05-01T00:00:00.000Z",
+      updatedAt: "2021-05-01T00:00:00.000Z",
+    });
+  }
+
   const { id } = req.params;
 
   const user = await prisma.user.findUnique({
@@ -41,6 +72,31 @@ const getUserById = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  if (isDemo) {
+    const token = jwt.sign(
+      {
+        id: 1,
+        username: "admin",
+        email: "",
+        firstName: "Admin",
+        lastName: "Admin",
+      },
+      process.env.JWT_SECRET
+    );
+
+    return res.status(200).json({
+      message: "Login successful",
+      token: token,
+      user: {
+        id: 1,
+        username: "admin",
+        email: "",
+        firstName: "Admin",
+        lastName: "Admin",
+      },
+    });
+  }
+
   const { username, password } = req.body;
 
   const user = await prisma.user.findUnique({
@@ -92,6 +148,12 @@ const login = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      message: "User deleted",
+    });
+  }
+
   const { id } = req.params;
 
   const user = await prisma.user.findUnique({
@@ -124,12 +186,24 @@ const deleteUser = async (req, res) => {
 };
 
 const logout = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      message: "Logout successful",
+    });
+  }
+
   return res.status(200).json({
     message: "Logout successful",
   });
 };
 
 const register = async (req, res) => {
+  if (isDemo) {
+    return res.status(201).json({
+      message: "User created",
+    });
+  }
+
   const { firstName, lastName, username, email, password } = req.body;
 
   const user = await prisma.user.findUnique({
@@ -168,6 +242,12 @@ const register = async (req, res) => {
 };
 
 const updatePassword = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      message: "Password updated",
+    });
+  }
+
   const { id } = req.params;
   const { currentPassword, newPassword } = req.body;
 
@@ -215,6 +295,12 @@ const updatePassword = async (req, res) => {
 };
 
 const updateUsername = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      message: "Username updated",
+    });
+  }
+
   const { id } = req.params;
   const { username } = req.body;
 
@@ -252,6 +338,12 @@ const updateUsername = async (req, res) => {
 };
 
 const updateEmail = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      message: "Email updated",
+    });
+  }
+
   const { id } = req.params;
   const { newEmail } = req.body;
 
@@ -289,6 +381,12 @@ const updateEmail = async (req, res) => {
 };
 
 const updateName = async (req, res) => {
+  if (isDemo) {
+    return res.status(200).json({
+      message: "Name updated",
+    });
+  }
+
   const { id } = req.params;
   const { newName, newLastName } = req.body;
 
